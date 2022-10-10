@@ -7,17 +7,21 @@ patchedDependencies:
 
 specifiers:
   '@slack/bolt': ^3.12.1
+  '@types/lodash': ^4.14.186
   '@types/node': ^16
   dotenv: ^16.0.3
+  lodash: ^4.17.21
   lowdb-cjs: 3.0.1
   ts-node-dev: ^2.0.0
   typescript: ^4.8.4
 
 dependencies:
   '@slack/bolt': 3.12.1
+  lodash: 4.17.21
   lowdb-cjs: 3.0.1_jhwpa3xfatrsdrjlsb4zl3o3aa
 
 devDependencies:
+  '@types/lodash': 4.14.186
   '@types/node': 16.11.62
   dotenv: 16.0.3
   ts-node-dev: 2.0.0_qj2pceye7x36wjy4gpgxephk74
@@ -196,6 +200,10 @@ packages:
     dependencies:
       '@types/node': 18.7.23
     dev: false
+
+  /@types/lodash/4.14.186:
+    resolution: {integrity: sha512-eHcVlLXP0c2FlMPm56ITode2AgLMSa6aJ05JTTbYbI+7EMkCEE5qk2E41d5g2lCVTqRe0GnnRFurmlCsDODrPw==}
+    dev: true
 
   /@types/mime/3.0.1:
     resolution: {integrity: sha512-Y4XFY5VJAuw0FgAqPNd6NNoV44jbq9Bz2L7Rh/J6jLTiHBSBJa9fxqQIvkIld4GsoDOcCbvzOUAbLPsSKKg+uA==}
@@ -1008,6 +1016,10 @@ packages:
 
   /lodash.once/4.1.1:
     resolution: {integrity: sha512-Sb487aTOCr9drQVL8pIxOzVhafOjZN9UU54hiN8PU3uAiSV7lx1yYNpbNmex2PK6dSJoNTSJUUswT651yww3Mg==}
+    dev: false
+
+  /lodash/4.17.21:
+    resolution: {integrity: sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==}
     dev: false
 
   /lowdb-cjs/3.0.1_jhwpa3xfatrsdrjlsb4zl3o3aa:

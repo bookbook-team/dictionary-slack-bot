@@ -13,9 +13,11 @@
   "license": "ISC",
   "dependencies": {
     "@slack/bolt": "^3.12.1",
+    "lodash": "^4.17.21",
     "lowdb-cjs": "3.0.1"
   },
   "devDependencies": {
+    "@types/lodash": "^4.14.186",
     "@types/node": "^16",
     "dotenv": "^16.0.3",
     "ts-node-dev": "^2.0.0",
