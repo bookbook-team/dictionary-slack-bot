@@ -30,6 +30,14 @@ Add this bot to your slack!
 
 ### TODO
 
+- auth
+  - https://slack.dev/bolt-js/concepts#authenticating-oauth
 - connect db
   - distict the dictionaries by organization(? workspace?)
-- auth
+- deploy to heroku
+- support other languages
+  - https://api.slack.com/start/designing/localizing
+
+## trouble shooting
+
+- `[WARN] bolt-app http request failed unable to get local issuer certificate`: turn off proxy

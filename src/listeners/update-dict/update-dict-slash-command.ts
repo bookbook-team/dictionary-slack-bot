@@ -1,20 +1,16 @@
-import { webClient } from "../../clients/web-client";
+import { Middleware, SlackCommandMiddlewareArgs } from "@slack/bolt";
 import { lowDb } from "../../db/lowdb";
-import { SlackEventListenerFn } from "../../types/slack-listener";
-import { openDictModal } from "../open-dict-modal";
 import { UPDATE_DICT_CALLBACK_ID } from "../constants";
+import { openDictModal } from "../open-dict-modal";
 
-export const updateDictCommandLinstener: SlackEventListenerFn<
-  "slash_commands"
-> = async ({ body, ack }) => {
-  await ack();
-  if (body.command !== "/update-dict") {
-    return;
-  }
+export const updateDictCommandLinstener: Middleware<
+  SlackCommandMiddlewareArgs
+> = async ({ body, ack, client }) => {
+  await ack({ response_type: "ephemeral", text: "wait..." });
 
   const word = await lowDb.getOne("words", { title: body.text });
   if (!word) {
-    await webClient.chat.postEphemeral({
+    await client.chat.postEphemeral({
       text: `The word '${body.text}' is not in my dictionary`,
       user: body.user_id,
       channel: body.channel_id,
@@ -31,5 +27,6 @@ export const updateDictCommandLinstener: SlackEventListenerFn<
       defaultValue: word.desc,
     },
     callbackId: UPDATE_DICT_CALLBACK_ID,
+    client,
   });
 };

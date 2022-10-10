@@ -1,4 +1,3 @@
-import { webClient } from "../clients/web-client";
 import { DICT_DESC_BLOCK_ID, DICT_TITLE_BLOCK_ID } from "./constants";
 
 export interface OpenDictModalArgs {
@@ -10,11 +9,12 @@ export interface OpenDictModalArgs {
     submitButtonText?: string;
     defaultValue?: string;
   };
+  client: any;
 }
 
 export const openDictModal = async (args: OpenDictModalArgs) => {
-  const { triggerId, modal, wordTitle, callbackId } = args;
-  await webClient.views.open({
+  const { triggerId, modal, wordTitle, callbackId, client } = args;
+  await client.views.open({
     trigger_id: triggerId,
     view: {
       type: "modal",

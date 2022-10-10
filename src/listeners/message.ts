@@ -1,27 +1,13 @@
-import { KnownBlock } from "@slack/web-api";
-import { webClient } from "../clients/web-client";
+import { KnownBlock, Middleware, SlackEventMiddlewareArgs } from "@slack/bolt";
 import { lowDb } from "../db/lowdb";
-import { SlackEventListenerFn } from "../types/slack-listener";
-import { CREATE_DICT_CALLBACK_ID } from "./constants";
+import { CREATE_DICT_BUTTON_CALLBACK_ID } from "./constants";
 
 const SLACK_APP_ID = process.env.SLACK_APP_ID;
 const SLACK_APP_NAME = process.env.SLACK_APP_NAME;
 
-export const allMessageLinstener: SlackEventListenerFn<"app_mention"> = async ({
-  event,
-  ack,
-}) => {
-  await ack();
-
-  // ignore all bot message
-  if (
-    event.type !== "app_mention" ||
-    !event.text.includes(`<@${SLACK_APP_ID}>`) ||
-    event.user === SLACK_APP_ID
-  ) {
-    return;
-  }
-
+export const allMessageLinstener: Middleware<
+  SlackEventMiddlewareArgs<"app_mention">
+> = async ({ event, client }) => {
   const title = event.text.replace(`<@${SLACK_APP_ID}>`, "").trim();
   if (!title) {
     const fallbackMessage =
@@ -29,8 +15,8 @@ export const allMessageLinstener: SlackEventListenerFn<"app_mention"> = async ({
       "`" +
       `@${SLACK_APP_NAME} <word>` +
       "`";
-    await webClient.chat.postMessage({
-      text: "dictionary-slack-bot",
+    await client.chat.postMessage({
+      text: SLACK_APP_NAME,
       blocks: [
         { type: "section", text: { type: "mrkdwn", text: fallbackMessage } },
       ],
@@ -62,13 +48,13 @@ export const allMessageLinstener: SlackEventListenerFn<"app_mention"> = async ({
           type: "button",
           text: { type: "plain_text", text: "create word", emoji: true },
           value: title,
-          action_id: CREATE_DICT_CALLBACK_ID,
+          action_id: CREATE_DICT_BUTTON_CALLBACK_ID,
         },
       ],
     });
   }
 
-  await webClient.chat.postMessage({
+  await client.chat.postMessage({
     text: `create word`,
     blocks,
     channel: event.channel,
