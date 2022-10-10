@@ -1,6 +1,5 @@
 require("dotenv").config(); // always place it into first line
 
-import { slackAppClient } from "./clients/slack-app-client";
 import { allMessageLinstener } from "./listeners/message";
 import { createDictCommandLinstener } from "./listeners/create-dict/create-dict-slash-command";
 import { createDictSubmissionListener } from "./listeners/create-dict/create-dict-submission";
@@ -12,6 +11,7 @@ import {
   CREATE_DICT_CALLBACK_ID,
   UPDATE_DICT_CALLBACK_ID,
 } from "./listeners/constants";
+import { slackAppClient } from "./clients/slack-app-client";
 
 slackAppClient.event("app_mention", allMessageLinstener);
 slackAppClient.command("/create-dict", createDictCommandLinstener);
@@ -31,7 +31,7 @@ slackAppClient.action(
 
 (async () => {
   // Start your app
-  await slackAppClient.start();
+  await slackAppClient.start(process.env.PORT || 3000);
 
   console.log("⚡️ Bolt app is running!");
 })();
