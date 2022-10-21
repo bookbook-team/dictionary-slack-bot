@@ -36,9 +36,7 @@ Add this bot to your slack!
 
 ### TODO
 
-- connect db
-  - distict the dictionaries by organization(? workspace?)
-- deploy to heroku
+- deploy to aws
 - support other languages
   - https://api.slack.com/start/designing/localizing
 

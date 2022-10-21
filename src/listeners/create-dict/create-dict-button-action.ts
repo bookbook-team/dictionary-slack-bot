@@ -4,7 +4,7 @@ import {
   Middleware,
   SlackActionMiddlewareArgs,
 } from "@slack/bolt";
-import { lowDb } from "../../db/lowdb";
+import { Word } from "../../db/models";
 import { CREATE_DICT_CALLBACK_ID } from "../constants";
 import { openDictModal } from "../open-dict-modal";
 
@@ -14,7 +14,12 @@ export const createDictButtonLinstener: Middleware<
   await ack();
 
   const wordTitle = (body.actions[0] as ButtonAction).value;
-  const word = await lowDb.getOne("words", { title: wordTitle });
+  const word = body.team?.id
+    ? await Word.findOne({ title: wordTitle, teamId: body.team.id })
+    : await Word.findOne({
+        title: wordTitle,
+        enterpriseId: body.enterprise?.id,
+      });
 
   if (word) {
     await client.chat.postEphemeral({

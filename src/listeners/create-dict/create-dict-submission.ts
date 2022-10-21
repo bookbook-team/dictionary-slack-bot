@@ -4,7 +4,7 @@ import {
   SlackViewMiddlewareArgs,
   ViewSubmitAction,
 } from "@slack/bolt";
-import { lowDb } from "../../db/lowdb";
+import { Word } from "../../db/models";
 import { DICT_DESC_BLOCK_ID, DICT_TITLE_BLOCK_ID } from "../constants";
 
 export const createDictSubmissionListener: Middleware<
@@ -20,8 +20,16 @@ export const createDictSubmissionListener: Middleware<
   );
   const title = (titleBlock as HeaderBlock).text.text;
 
-  const word = await lowDb.getOne("words", { title });
+  const word = body.team?.id
+    ? await Word.findOne({ title, teamId: body.team.id })
+    : await Word.findOne({ title, enterpriseId: body.enterprise?.id });
+
   if (!word) {
-    await lowDb.save("words", { title, desc });
+    await Word.create({
+      title,
+      desc,
+      teamId: body.team?.id,
+      enterpriseId: body.enterprise?.id,
+    });
   }
 };
