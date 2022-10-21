@@ -1,5 +1,5 @@
 import { Middleware, SlackCommandMiddlewareArgs } from "@slack/bolt";
-import { lowDb } from "../../db/lowdb";
+import { Word } from "../../db/models";
 import { CREATE_DICT_CALLBACK_ID } from "../constants";
 import { openDictModal } from "../open-dict-modal";
 
@@ -8,7 +8,13 @@ export const createDictCommandLinstener: Middleware<
 > = async ({ body, ack, command, client }) => {
   await ack({ response_type: "ephemeral", text: "wait..." });
 
-  const word = await lowDb.getOne("words", { title: command.text });
+  const word = body.team_id
+    ? await Word.findOne({ title: command.text, teamId: body.team_id })
+    : await Word.findOne({
+        title: command.text,
+        enterpriseId: body.enterprise_id,
+      });
+
   if (word) {
     await client.chat.postEphemeral({
       text: `the word '${word.title}' is already created`,

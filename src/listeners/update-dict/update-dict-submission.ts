@@ -4,7 +4,7 @@ import {
   SlackViewMiddlewareArgs,
   ViewSubmitAction,
 } from "@slack/bolt";
-import { lowDb } from "../../db/lowdb";
+import { Word } from "../../db/models";
 import { DICT_DESC_BLOCK_ID, DICT_TITLE_BLOCK_ID } from "../constants";
 
 export const updateDictSubmissionListener: Middleware<
@@ -19,5 +19,15 @@ export const updateDictSubmissionListener: Middleware<
   );
   const title = (titleBlock as HeaderBlock).text.text;
 
-  await lowDb.update("words", { title }, { title, desc });
+  if (body.team?.id) {
+    await Word.findOneAndUpdate(
+      { title, teamId: body.team.id },
+      { title, desc, teamId: body.team?.id, enterpriseId: body.enterprise?.id }
+    );
+  } else {
+    await Word.findOneAndUpdate(
+      { enterpriseId: body.enterprise?.id },
+      { title, desc, teamId: body.team?.id, enterpriseId: body.enterprise?.id }
+    );
+  }
 };

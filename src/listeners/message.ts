@@ -1,5 +1,5 @@
 import { KnownBlock, Middleware, SlackEventMiddlewareArgs } from "@slack/bolt";
-import { lowDb } from "../db/lowdb";
+import { Word } from "../db/models";
 import { CREATE_DICT_BUTTON_CALLBACK_ID } from "./constants";
 
 const SLACK_APP_ID = process.env.SLACK_APP_ID;
@@ -7,7 +7,7 @@ const SLACK_APP_NAME = process.env.SLACK_APP_NAME;
 
 export const allMessageLinstener: Middleware<
   SlackEventMiddlewareArgs<"app_mention">
-> = async ({ event, client }) => {
+> = async ({ event, client, body }) => {
   const title = event.text.replace(`<@${SLACK_APP_ID}>`, "").trim();
   if (!title) {
     const fallbackMessage =
@@ -26,7 +26,9 @@ export const allMessageLinstener: Middleware<
     return;
   }
 
-  const word = await lowDb.getOne("words", { title });
+  const word = body.team_id
+    ? await Word.findOne({ title, teamId: body.team_id })
+    : await Word.findOne({ title, enterpriseId: body.enterprise_id });
 
   const blocks: KnownBlock[] = [
     {

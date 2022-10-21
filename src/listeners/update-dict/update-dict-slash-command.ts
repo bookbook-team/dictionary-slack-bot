@@ -1,5 +1,5 @@
 import { Middleware, SlackCommandMiddlewareArgs } from "@slack/bolt";
-import { lowDb } from "../../db/lowdb";
+import { Word } from "../../db/models";
 import { UPDATE_DICT_CALLBACK_ID } from "../constants";
 import { openDictModal } from "../open-dict-modal";
 
@@ -8,7 +8,13 @@ export const updateDictCommandLinstener: Middleware<
 > = async ({ body, ack, client }) => {
   await ack({ response_type: "ephemeral", text: "wait..." });
 
-  const word = await lowDb.getOne("words", { title: body.text });
+  const word = body.team_id
+    ? await Word.findOne({ title: body.text, teamId: body.team_id })
+    : await Word.findOne({
+        title: body.text,
+        enterpriseId: body.enterprise_id,
+      });
+
   if (!word) {
     await client.chat.postEphemeral({
       text: `The word '${body.text}' is not in my dictionary`,
